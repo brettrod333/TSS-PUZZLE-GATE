@@ -189,8 +189,8 @@
 
   <div class="side-mission">
     <div class="side-mission-label">Classified Side Mission</div>
-    <div class="side-mission-img">
-      <span>Image Placeholder</span>
+    <div class="side-mission-img" id="side-mission-img">
+      <span id="side-mission-placeholder">Image Placeholder</span>
     </div>
   </div>
 
@@ -202,11 +202,60 @@
 </footer>
 
 <script>
-  // Read the code from URL and pass it to puzzle gate
+  // SIDE MISSION IMAGE MAP
+  // Replace placeholder filenames with real images as you create them
+  // Upload images to your img/ folder then update the filename here
+  var SIDE_MISSIONS = {
+    "RAVEN":     "img/sm-raven.jpg",
+    "FOXHOLE":   "img/sm-foxhole.jpg",
+    "CRIMSON":   "img/sm-crimson.jpg",
+    "DAGGER":    "img/sm-dagger.jpg",
+    "SMOKEOUT":  "img/sm-smokeout.jpg",
+    "TUXEDO":    "img/sm-tuxedo.jpg",
+    "REDLIGHT":  "img/sm-redlight.jpg",
+    "TRIPWIRE":  "img/sm-tripwire.jpg",
+    "DECOY":     "img/sm-decoy.jpg",
+    "SHADOW":    "img/sm-shadow.jpg",
+    "FROSTBITE": "img/sm-frostbite.jpg",
+    "LOCKPICK":  "img/sm-lockpick.jpg",
+    "SILENCER":  "img/sm-silencer.jpg",
+    "PHANTOM":   "img/sm-phantom.jpg",
+    "SPECTER":   "img/sm-specter.jpg",
+    "ECLIPSE":   "img/sm-eclipse.jpg",
+    "BLACKOUT":  "img/sm-blackout.jpg",
+    "VORTEX":    "img/sm-vortex.jpg",
+    "IRONCLAD":  "img/sm-ironclad.jpg",
+    "VIPER":     "img/sm-viper.jpg",
+    "NIGHTHAWK": "img/sm-nighthawk.jpg",
+    "REAPER":    "img/sm-reaper.jpg",
+    "SENTINEL":  "img/sm-sentinel.jpg",
+    "COBRA":     "img/sm-cobra.jpg",
+    "WRAITH":    "img/sm-wraith.jpg",
+    "KINGPIN":   "img/sm-kingpin.jpg"
+  };
+
+  // Read code from URL
   var params = new URLSearchParams(window.location.search);
-  var code = params.get('code') || '';
+  var code = (params.get('code') || '').toUpperCase();
+
+  // Pass code to puzzle gate
   if (code) {
     document.getElementById('investigate-btn').href = 'puzzlegate.html?code=' + code;
+  }
+
+  // Load side mission image for this bundle
+  var missionImg = SIDE_MISSIONS[code];
+  if (missionImg) {
+    var container = document.getElementById('side-mission-img');
+    var img = document.createElement('img');
+    img.src = missionImg;
+    img.style.width = '100%';
+    img.style.display = 'block';
+    img.onerror = function() {
+      // Image not uploaded yet — keep showing placeholder text
+    };
+    container.innerHTML = '';
+    container.appendChild(img);
   }
 
   // Prevent back navigation
