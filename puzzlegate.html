@@ -530,20 +530,37 @@
 <script>
 
 // ── IMAGE POOL ────────────────────────────────────
-// ADD NEW IMAGES HERE as you upload them to GitHub
-// Position determines correct answer:
 // Positions 1-10 = SAME, 11-20 = DIFFERENT
 // 21-30 = SAME, 31-40 = DIFFERENT (repeating pattern)
 var IMAGE_POOL = [
-  "img/PG-_20260414_144645_0000.jpg",  // position 1 — SAME
-  "img/PG-_20260414_144645_0001.jpg",  // position 2 — SAME
-  "img/PG-_20260414_144645_0002.jpg",  // position 3 — SAME
-  // Add new filenames below this line:
-  // "img/YOUR-FILENAME-HERE.jpg",
+  // SAME — positions 1-10
+  "img/PG-_20260414_144645_0000.jpg",          // 1 — SAME
+  "img/PG-_20260414_144645_0001.jpg",          // 2 — SAME
+  "img/PG-_20260414_144645_0002.jpg",          // 3 — SAME
+  "img/PG3_20260416_011002_0000.jpg",          // 4 — SAME
+  "img/PG3 (2)_20260416_011002_0001.jpg",      // 5 — SAME
+  "img/PG3 (3)_20260416_011002_0002.jpg",      // 6 — SAME
+  "img/PG3 (4)_20260416_011002_0003.jpg",      // 7 — SAME
+  "img/PG3 (5)_20260416_011002_0004.jpg",      // 8 — SAME
+  "img/PG3 (6)_20260416_011002_0005.jpg",      // 9 — SAME
+  "img/PG3 (7)_20260416_011002_0006.jpg",      // 10 — SAME
+  // DIFFERENT — positions 11-20
+  "img/PG3_20260416_003057_0000.jpg",          // 11 — DIFFERENT
+  "img/PG3 (2)_20260416_003057_0001.jpg",      // 12 — DIFFERENT
+  "img/PG3 (3)_20260416_003057_0002.jpg",      // 13 — DIFFERENT
+  "img/PG3 (4)_20260416_003057_0003.jpg",      // 14 — DIFFERENT
+  "img/PG3 (5)_20260416_003057_0004.jpg",      // 15 — DIFFERENT
+  "img/PG3 (6)_20260416_003057_0005.jpg",      // 16 — DIFFERENT
+  "img/PG3 (7)_20260416_003057_0006.jpg",      // 17 — DIFFERENT
+  "img/PG3 (8)_20260416_003057_0007.jpg",      // 18 — DIFFERENT
+  "img/PG3 (9)_20260416_003057_0008.jpg",      // 19 — DIFFERENT
+  "img/PG3 (10)_20260416_003057_0009.jpg",     // 20 — DIFFERENT
+  // Add new images below this line:
+  // SAME batch: add to positions 21-30
+  // DIFFERENT batch: add to positions 31-40
 ];
 
 // ── BUNDLE LOOKUP ─────────────────────────────────
-// All 26 classified codes mapped to Shopify hidden product URLs
 var BUNDLES = {
   "RAVEN":     { url: "https://top-secret-sweets.myshopify.com/products/raven-bundle" },
   "FOXHOLE":   { url: "https://top-secret-sweets.myshopify.com/products/foxhole-bundle" },
@@ -574,8 +591,6 @@ var BUNDLES = {
 };
 
 // ── ANSWER LOGIC ─────────────────────────────────
-// Position in IMAGE_POOL determines correct answer
-// 1-10 = same, 11-20 = different, 21-30 = same, etc.
 function getCorrectAnswer(position) {
   var group = Math.floor((position - 1) / 10);
   return group % 2 === 0 ? 'same' : 'different';
@@ -601,15 +616,12 @@ var selectedPuzzles = selectPuzzles();
 var correctAnswers = selectedPuzzles.map(function(p) { return getCorrectAnswer(p.position); });
 var countdownInterval = null;
 
-// Set case file label
 document.getElementById('case-file-label').textContent = 'Case File — ' + (CODE || 'UNKNOWN');
 
-// Load puzzle images
 for (var i = 0; i < 3; i++) {
   document.getElementById('img-' + (i+1)).src = selectedPuzzles[i].src;
 }
 
-// Prevent back navigation
 history.pushState(null, null, location.href);
 window.onpopstate = function() {
   window.location.replace('https://tssaccesspage.carrd.co');
@@ -637,14 +649,12 @@ function answer(puzzleNum, chosen, event) {
         document.getElementById('dot-' + next).classList.add('active');
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else {
-        // All 3 correct — show ACCESS GRANTED
         document.getElementById('puzzle-stage').style.display = 'none';
         document.querySelector('.briefing').style.display = 'none';
         document.querySelector('.progress-wrap').style.display = 'none';
         document.getElementById('screen-granted').classList.add('active');
         window.scrollTo({ top: 0, behavior: 'smooth' });
 
-        // Set bundle details
         if (bundle) {
           document.getElementById('bundle-unlocked-label').textContent = CODE + ' BUNDLE UNLOCKED';
           var bundleBtn = document.getElementById('bundle-btn');
@@ -652,13 +662,11 @@ function answer(puzzleNum, chosen, event) {
           bundleBtn.textContent = 'ACCESS ' + CODE + ' BUNDLE';
         }
 
-        // Prevent back navigation from granted screen
         history.pushState(null, null, location.href);
         window.onpopstate = function() {
           window.location.replace('https://tssaccesspage.carrd.co');
         };
 
-        // Start 5 minute countdown
         startCountdown(300);
       }
     }, 900);
@@ -693,14 +701,12 @@ function startCountdown(seconds) {
     var secs = remaining % 60;
     timerEl.textContent = mins + ':' + (secs < 10 ? '0' : '') + secs;
 
-    // Turn red in final 60 seconds
     if (remaining <= 60) {
       timerEl.classList.add('urgent');
     }
 
     if (remaining <= 0) {
       clearInterval(countdownInterval);
-      // Show expiry popup then redirect
       document.getElementById('expiry-popup').classList.add('active');
       setTimeout(function() {
         window.location.replace('https://tssaccesspage.carrd.co');
