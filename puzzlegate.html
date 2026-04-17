@@ -75,23 +75,6 @@
     text-transform: uppercase;
   }
 
-  .briefing-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(32px, 8vw, 64px);
-    letter-spacing: 6px;
-    line-height: 1;
-    margin-bottom: 20px;
-  }
-
-  .briefing-text {
-    font-size: 13px;
-    line-height: 1.8;
-    color: #cccccc;
-    max-width: 520px;
-    margin: 0 auto;
-    letter-spacing: 1px;
-  }
-
   .progress-wrap {
     max-width: 680px;
     margin: 32px auto 0;
@@ -499,41 +482,34 @@
 <script>
 
 // ── IMAGE POOL ────────────────────────────────────
-// Rules:
-// 1. All images go in the img/ folder in your GitHub repo
-// 2. Filename MUST contain the word "same" or "different"
-// 3. That's it — add as many as you want, no other changes needed
+// SAME images:      s1.jpg through s50.jpg
+// DIFFERENT images: d1.jpg through d50.jpg
 //
-// Examples of valid filenames:
-//   same_001.jpg
-//   different_001.jpg
-//   PG3_same_kitchen.jpg
-//   PG3_different_dog.jpg
+// To add more images just upload them to the img/ folder
+// with the correct naming and they will be picked up automatically.
+// Missing files are skipped — no errors.
 
 var IMAGE_POOL = [
-  // ── SAME images ──
-  "img/same_001.jpg",
-  "img/same_002.jpg",
-  "img/same_003.jpg",
-  "img/same_004.jpg",
-  "img/same_005.jpg",
-  "img/same_006.jpg",
-  "img/same_007.jpg",
-  "img/same_008.jpg",
-  "img/same_009.jpg",
-  "img/same_010.jpg",
-  // ── DIFFERENT images ──
-  "img/different_001.jpg",
-  "img/different_002.jpg",
-  "img/different_003.jpg",
-  "img/different_004.jpg",
-  "img/different_005.jpg",
-  "img/different_006.jpg",
-  "img/different_007.jpg",
-  "img/different_008.jpg",
-  "img/different_009.jpg",
-  "img/different_010.jpg",
-  // Add more below — just follow the naming rule above
+  "img/s1.jpg","img/s2.jpg","img/s3.jpg","img/s4.jpg","img/s5.jpg",
+  "img/s6.jpg","img/s7.jpg","img/s8.jpg","img/s9.jpg","img/s10.jpg",
+  "img/s11.jpg","img/s12.jpg","img/s13.jpg","img/s14.jpg","img/s15.jpg",
+  "img/s16.jpg","img/s17.jpg","img/s18.jpg","img/s19.jpg","img/s20.jpg",
+  "img/s21.jpg","img/s22.jpg","img/s23.jpg","img/s24.jpg","img/s25.jpg",
+  "img/s26.jpg","img/s27.jpg","img/s28.jpg","img/s29.jpg","img/s30.jpg",
+  "img/s31.jpg","img/s32.jpg","img/s33.jpg","img/s34.jpg","img/s35.jpg",
+  "img/s36.jpg","img/s37.jpg","img/s38.jpg","img/s39.jpg","img/s40.jpg",
+  "img/s41.jpg","img/s42.jpg","img/s43.jpg","img/s44.jpg","img/s45.jpg",
+  "img/s46.jpg","img/s47.jpg","img/s48.jpg","img/s49.jpg","img/s50.jpg",
+  "img/d1.jpg","img/d2.jpg","img/d3.jpg","img/d4.jpg","img/d5.jpg",
+  "img/d6.jpg","img/d7.jpg","img/d8.jpg","img/d9.jpg","img/d10.jpg",
+  "img/d11.jpg","img/d12.jpg","img/d13.jpg","img/d14.jpg","img/d15.jpg",
+  "img/d16.jpg","img/d17.jpg","img/d18.jpg","img/d19.jpg","img/d20.jpg",
+  "img/d21.jpg","img/d22.jpg","img/d23.jpg","img/d24.jpg","img/d25.jpg",
+  "img/d26.jpg","img/d27.jpg","img/d28.jpg","img/d29.jpg","img/d30.jpg",
+  "img/d31.jpg","img/d32.jpg","img/d33.jpg","img/d34.jpg","img/d35.jpg",
+  "img/d36.jpg","img/d37.jpg","img/d38.jpg","img/d39.jpg","img/d40.jpg",
+  "img/d41.jpg","img/d42.jpg","img/d43.jpg","img/d44.jpg","img/d45.jpg",
+  "img/d46.jpg","img/d47.jpg","img/d48.jpg","img/d49.jpg","img/d50.jpg"
 ];
 
 // ── BUNDLE LOOKUP ─────────────────────────────────
@@ -563,28 +539,37 @@ var BUNDLES = {
   "SENTINEL":  { url: "https://top-secret-sweets.myshopify.com/products/sentinel-bundle" },
   "COBRA":     { url: "https://top-secret-sweets.myshopify.com/products/cobra-bundle" },
   "WRAITH":    { url: "https://top-secret-sweets.myshopify.com/products/wraith-bundle" },
-  "KINGPIN":   { url: "https://top-secret-sweets.myshopify.com/products/kingpin-bundle" },
+  "KINGPIN":   { url: "https://top-secret-sweets.myshopify.com/products/kingpin-bundle" }
 };
 
 // ── ANSWER LOGIC ─────────────────────────────────
-// Reads the filename to determine correct answer
-// If filename contains "same" → correct answer is "same"
-// If filename contains "different" → correct answer is "different"
+// s = same, d = different
 function getCorrectAnswer(filename) {
-  var lower = filename.toLowerCase();
-  if (lower.indexOf('different') !== -1) return 'different';
-  if (lower.indexOf('same') !== -1) return 'same';
-  return 'same'; // fallback
+  var name = filename.split('/').pop().toLowerCase();
+  return name.charAt(0) === 'd' ? 'different' : 'same';
+}
+
+// ── CHECK IF IMAGE EXISTS ─────────────────────────
+function checkImage(url) {
+  return new Promise(function(resolve) {
+    var img = new Image();
+    img.onload = function() { resolve(true); };
+    img.onerror = function() { resolve(false); };
+    img.src = url;
+  });
 }
 
 // ── RANDOM PUZZLE SELECTION ───────────────────────
-function selectPuzzles() {
-  var pool = IMAGE_POOL.slice();
+async function selectPuzzles() {
+  var checks = await Promise.all(IMAGE_POOL.map(function(src) {
+    return checkImage(src).then(function(exists) { return exists ? src : null; });
+  }));
+  var valid = checks.filter(function(src) { return src !== null; });
   var selected = [];
-  while (selected.length < 3 && pool.length > 0) {
-    var idx = Math.floor(Math.random() * pool.length);
-    selected.push(pool[idx]);
-    pool.splice(idx, 1);
+  while (selected.length < 3 && valid.length > 0) {
+    var idx = Math.floor(Math.random() * valid.length);
+    selected.push(valid[idx]);
+    valid.splice(idx, 1);
   }
   return selected;
 }
@@ -593,20 +578,22 @@ function selectPuzzles() {
 var params = new URLSearchParams(window.location.search);
 var CODE = (params.get('code') || '').toUpperCase();
 var bundle = BUNDLES[CODE];
-var selectedPuzzles = selectPuzzles();
-var correctAnswers = selectedPuzzles.map(function(src) { return getCorrectAnswer(src); });
+var correctAnswers = [];
 var countdownInterval = null;
 
 document.getElementById('case-file-label').textContent = 'Case File — ' + (CODE || 'UNKNOWN');
-
-for (var i = 0; i < 3; i++) {
-  document.getElementById('img-' + (i+1)).src = selectedPuzzles[i];
-}
 
 history.pushState(null, null, location.href);
 window.onpopstate = function() {
   window.location.replace('https://tssaccesspage.carrd.co');
 };
+
+selectPuzzles().then(function(selectedPuzzles) {
+  correctAnswers = selectedPuzzles.map(function(src) { return getCorrectAnswer(src); });
+  for (var i = 0; i < 3; i++) {
+    document.getElementById('img-' + (i+1)).src = selectedPuzzles[i];
+  }
+});
 
 // ── ANSWER HANDLER ────────────────────────────────
 function answer(puzzleNum, chosen, event) {
@@ -618,7 +605,6 @@ function answer(puzzleNum, chosen, event) {
   if (chosen === correct) {
     clickedBtn.classList.add('correct');
     clickedBtn.textContent = '✓ CORRECT';
-
     document.getElementById('dot-' + puzzleNum).classList.remove('active');
     document.getElementById('dot-' + puzzleNum).classList.add('complete');
 
@@ -680,9 +666,7 @@ function startCountdown(seconds) {
     var mins = Math.floor(remaining / 60);
     var secs = remaining % 60;
     timerEl.textContent = mins + ':' + (secs < 10 ? '0' : '') + secs;
-
     if (remaining <= 60) timerEl.classList.add('urgent');
-
     if (remaining <= 0) {
       clearInterval(countdownInterval);
       document.getElementById('expiry-popup').classList.add('active');
